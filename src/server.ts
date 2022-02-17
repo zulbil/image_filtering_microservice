@@ -41,16 +41,21 @@ import express, { Request, Response } from 'express';
     let { image_url } = req.query;
 
     if ( !image_url ) {
-      return res.status(400)
+      res.status(400)
                 .send(`Image url is required`);
     }
 
+    let imagesToDelete:Array<string> = [];
+
     filterImageFromURL(image_url)
-    .then((filteredPath) => {
-      return res.status(200).sendFile(filteredPath);
-    }).catch((err) => {
-      return res.status(500).send('Error occured : '+err);
-    });
+      .then((filteredPath) => {
+        imagesToDelete.push(filteredPath);
+        res.status(200).sendFile(filteredPath);
+      }).catch((err) => {
+        res.status(500).send('Error occured : '+err);
+      }).finally(()=> {
+        deleteLocalFiles(imagesToDelete);
+      });  
 
   });
   
