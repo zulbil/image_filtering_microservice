@@ -51,10 +51,9 @@ import express, { Request, Response } from 'express';
       .then((filteredPath) => {
         imagesToDelete.push(filteredPath);
         res.status(200).sendFile(filteredPath);
+        deleteLocalFiles(imagesToDelete);
       }).catch((err) => {
         res.status(500).send('Error occured : '+err);
-      }).finally(()=> {
-        deleteLocalFiles(imagesToDelete);
       });  
 
   });
